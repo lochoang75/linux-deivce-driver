@@ -36,27 +36,27 @@
         - If there is many item to clean up within the initialization, call clean up function, which must check the status of each item before undoing registration, can minimize
         the code duplication.
 ## Module loading races:
-    - Some other part of the kernel can make use of any facility you register immediately after that registration as completed.
-    - Do not register any facility until all of your internal initialization needed to support that facility has been completed.
-    - Must consider what happens if your initialization function decides to fail but some part of the kernel is already making use of a facility your module has registered.
+- Some other part of the kernel can make use of any facility you register immediately after that registration as completed.
+- Do not register any facility until all of your internal initialization needed to support that facility has been completed.
+- Must consider what happens if your initialization function decides to fail but some part of the kernel is already making use of a facility your module has registered.
 ## Module parameters:
-    - Can be assign at load time by `insmod` or `modprobe`
-    - Register by macro: `module_param(name, type, perm)`
+- Can be assign at load time by `insmod` or `modprobe`
+- Register by macro: `module_param(name, type, perm)`
 ## Doing it in userspace:
-    - Sometimes writing a so-called userspace device driver is a wise alternative to kernel hacking.
-    - The reasons are:
-        + The full C library can be linked in.
-        + The programmer can run a conventional debugger on the driver code without having go through contortioins to debug a running kernel
-        + If a user space driver hangs, you can simply kill it. Problem with the driver are unlikely to hang the entire system, unless the hardware being controlled
-        is really misbehaving.
-        + User memory is swappable, unlike kernel memory.
-        + A well-designed driver program can still, like kernel-space drivers, allow concurrent access to a device.
-        + If you must write a closed-source driver, the userspace option makes it easier for you to avoid ambigous licensing situations and problems with changing
-        kernel interfaces.
-    - Some drawbacks:
-        + Interrupts are not available in user space.
-        + Direct access to memory is possible only by mmapping devmem, and only a privileged user can do that.
-        + Access to I/O ports is only after calling ioperm or iopl.
-        + Response time is slower, because a context switch is required to transfer information or actions between the client and the hardware.
-        + If the driver has been swapped to disk, response time is unacceptably long. Using the mlock system call a userspace program depends on a lot of library code.
-        + The most important devices can't be handled in user space, including, but not limited to, network interfaces and block devices.
+- Sometimes writing a so-called userspace device driver is a wise alternative to kernel hacking.
+- The reasons are:
+    + The full C library can be linked in.
+    + The programmer can run a conventional debugger on the driver code without having go through contortioins to debug a running kernel
+    + If a user space driver hangs, you can simply kill it. Problem with the driver are unlikely to hang the entire system, unless the hardware being controlled
+    is really misbehaving.
+    + User memory is swappable, unlike kernel memory.
+    + A well-designed driver program can still, like kernel-space drivers, allow concurrent access to a device.
+    + If you must write a closed-source driver, the userspace option makes it easier for you to avoid ambigous licensing situations and problems with changing
+    kernel interfaces.
+- Some drawbacks:
+    + Interrupts are not available in user space.
+    + Direct access to memory is possible only by mmapping devmem, and only a privileged user can do that.
+    + Access to I/O ports is only after calling ioperm or iopl.
+    + Response time is slower, because a context switch is required to transfer information or actions between the client and the hardware.
+    + If the driver has been swapped to disk, response time is unacceptably long. Using the mlock system call a userspace program depends on a lot of library code.
+    + The most important devices can't be handled in user space, including, but not limited to, network interfaces and block devices.
